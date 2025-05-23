@@ -2,7 +2,8 @@
 
 body{
   margin:0px;
-
+  color:white;
+  font-family: "Open Sans", sans-serif;
 }
 
 .nav-bar{
@@ -12,6 +13,7 @@ body{
 .nav-content {
   display: flex;
   align-items: center;
+  border-bottom: 3px solid red;
 }
 .nav-links{
   margin-left:auto;
@@ -43,4 +45,28 @@ body{
   color: #f0f0f0;
 }
 
+.news-card{
+  background: #004170;
+  width: 300px;
+  border: 2px solid red;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.news-card-image{
+  width: 300px;
+  display: block;
+  border-radius: 0;
+}
+
+.News {
+  text-align: center;
+}
+
+.news-cards-container {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 24px;
+}
 
