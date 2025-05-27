@@ -35,7 +35,7 @@ function Header() {
                                 to="news-section"
                                 smooth={true}
                                 duration={500}
-                                offset={-80}
+                                offset={-200}
                                 className="nav-btn-link"
                             >
                                 News
@@ -56,7 +56,15 @@ function Header() {
                     <img className="logo" src={PSGLogo} alt="PSG Logo" />
                     <ul className="nav-links nav-links-right">
                         <li>
-                            <a href="/players">Players</a>
+                            <Link
+                                to="players-section"
+                                smooth={true}
+                                duration={500}
+                                offset={-80}
+                                className="nav-btn-link"
+                            >
+                                Players
+                            </Link>
                         </li>
                         <li className="login-link">
                             <a href="/signup">Login</a>

@@ -1,4 +1,10 @@
 /* Players.css */
+.team-heading{
+    text-align:center;
+}
+
+
+
 .player-cards-row {
     display: flex;
     flex-wrap: wrap;

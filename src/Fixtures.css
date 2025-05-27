@@ -19,8 +19,9 @@
     border-radius: 16px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
     padding: 24px 32px;
-    min-width: 260px;
+    min-width: 250px;
     max-width: 320px;
+    width: 250px;
     color: white;
 }
 
