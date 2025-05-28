@@ -1,0 +1,73 @@
+body.login-page {
+  margin-top: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.login-container {
+  /* Center using margin auto for fallback, but body flex ensures centering */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  width: 260px;
+  /* Remove height: 100vh to allow body flex centering */
+  height: auto;
+  margin: auto;
+}
+
+.login-heading {
+  margin-bottom: 2rem;
+  color: #fff;
+  font-size: 2.2rem;
+  letter-spacing: 2px;
+}
+
+.email-heading,
+.password-heading {
+  align-self: flex-start;
+  margin: 0 0 0.2rem 0.5rem;
+  font-size: 1rem;
+  color: #fff;
+}
+
+.input-field {
+  width: 260px;
+  padding: 0.5rem 0;
+  margin-bottom: 2rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid #e20815;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input-field:focus {
+  border-bottom: 2.5px solid #fff;
+}
+
+button {
+  width: 260px;
+  padding: 0.7rem 0;
+  background: #e20815;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 1rem;
+  letter-spacing: 1px;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #b10610;
+}
