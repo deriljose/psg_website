@@ -1,44 +1,47 @@
+import { useEffect, useState } from "react";
 import "./Fixtures.css";
 
 function Fixtures() {
+    const [fixtures, setFixtures] = useState([]);
+
+    useEffect(() => {
+        fetch("http://localhost:5000/api/fixtures")
+            .then(res => res.json())
+            .then(data => setFixtures(Array.isArray(data) ? data : []))
+            .catch(() => setFixtures([]));
+    }, []);
+
     return (
         <div>
             <h1 className="fixture-heading">Fixtures</h1>
             <div className="fixtures-cards-container">
-                <div className="fixture-card">
-                    <ul>
-                        <li>UEFA Champians League - Final</li>
-                        <li>PSG VS Inter</li>
-                        <li>1st June 12:30am IST</li>
-                    </ul>
-                </div>
-                <div className="fixture-card">
-                    <ul>
-                        <li>
-                            FIFA Club World Cup | Group Stage | Matchday 1 of 3
-                        </li>
-                        <li>PSG VS Atlético de Madrid</li>
-                        <li>16th June 12:30am IST</li>
-                    </ul>
-                </div>
-                <div className="fixture-card">
-                    <ul>
-                        <li>
-                            FIFA Club World Cup | Group Stage | Matchday 2 of 3
-                        </li>
-                        <li>PSG VS Botafogo</li>
-                        <li>20th June 6:30am IST</li>
-                    </ul>
-                </div>
-                <div className="fixture-card">
-                    <ul>
-                        <li>
-                            FIFA Club World Cup | Group Stage | Matchday 3 of 3
-                        </li>
-                        <li>Seattle Sounders VS PSG</li>
-                        <li>24th June 12:30am IST</li>
-                    </ul>
-                </div>
+                {fixtures.map(fixture => (
+                    <div className="fixture-card" key={fixture._id}>
+                        <ul>
+                            <li>
+                                {fixture.competition}
+                                {fixture.stage ? " | " + fixture.stage : ""}
+                            </li>
+                            <li>
+                                {fixture.homeTeam} VS {fixture.awayTeam}
+                            </li>
+                            <li>
+                                {fixture.date
+                                    ? new Date(fixture.date).toLocaleString("en-IN", {
+                                        day: "numeric",
+                                        month: "short",
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                        hour12: true,
+                                        timeZone: "Asia/Kolkata"
+                                    }) + " IST"
+                                    : ""}
+                            </li>
+                            {fixture.venue && <li>{fixture.venue}</li>}
+                            {fixture.status && <li>Status: {fixture.status}</li>}
+                        </ul>
+                    </div>
+                ))}
             </div>
         </div>
     );

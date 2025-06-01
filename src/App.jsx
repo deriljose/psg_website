@@ -1,12 +1,12 @@
 import React from "react";
-import { Link, Element } from "react-scroll";
-import { Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Header from "./Header.jsx";
 import News from "./News.jsx";
 import Fixtures from "./Fixtures.jsx";
 import Players from "./Players.jsx";
 import Login from "./Login.jsx";
+import Admin from "./Admin.jsx"; // create this component for your admin UI
 
 function MainContent() {
   return (
@@ -27,9 +27,11 @@ function MainContent() {
 
 function App() {
   return (
+    // Remove <Router> from here if your index.jsx or main.jsx already wraps <App /> with <Router>
     <Routes>
       <Route path="/" element={<MainContent />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/admin" element={<Admin />} />
     </Routes>
   );
 }

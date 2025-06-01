@@ -7,11 +7,12 @@
 
 .player-cards-row {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 50px;
     justify-content: center;
     margin-top: 50px;
-    margin-bottom:50px;
+    margin-bottom: 50px;
+    overflow-x: auto;
 }
 
 .player-card {
