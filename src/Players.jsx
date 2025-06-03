@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import donnarummaImage from "./assets/donnarumma.png";
 import safonovImage from "./assets/safonov.png";
 import arnauImage from "./assets/arnau.png";
@@ -25,6 +26,34 @@ import mbayeImage from "./assets/mbaye.png";
 
 import "./Players.css";
 
+// Map player number to imported images
+const playerImages = {
+    1: donnarummaImage,
+    39: safonovImage,
+    80: arnauImage,
+    2: hakimiImage,
+    3: kimpembeImage,
+    5: marquinhosImage,
+    21: hernandezImage,
+    25: mendesImage,
+    35: beraldoImage,
+    42: zagueImage,
+    45: hannachImage,
+    51: pachoImage,
+    8: ruizImage,
+    17: vitinhaImage,
+    19: leeImage,
+    24: mayuluImage,
+    33: zaireImage,
+    87: nevesImage,
+    7: khvichaImage,
+    9: ramosImage,
+    10: dembeleImage,
+    14: doueImage,
+    29: barcolaImage,
+    49: mbayeImage,
+};
+
 function PlayerCard({ number, name, position, img }) {
     return (
         <div
@@ -43,59 +72,60 @@ function PlayerCard({ number, name, position, img }) {
     );
 }
 
+function groupByPosition(players) {
+    const grouped = { Goalkeeper: [], Defender: [], Midfielder: [], Forward: [] };
+    players.forEach(player => {
+        // Normalize position spelling
+        let pos = player.position;
+        if (pos === "Foreward") pos = "Forward";
+        if (grouped[pos]) grouped[pos].push(player);
+    });
+    return grouped;
+}
+
+function chunkArray(arr, size) {
+    const result = [];
+    for (let i = 0; i < arr.length; i += size) {
+        result.push(arr.slice(i, i + size));
+    }
+    return result;
+}
+
 function Players() {
+    const [players, setPlayers] = useState([]);
+
+    useEffect(() => {
+        fetch("http://localhost:5000/api/players")
+            .then(res => res.json())
+            .then(data => setPlayers(data))
+            .catch(() => setPlayers([]));
+    }, []);
+
+    const grouped = groupByPosition(players);
+
     return (
         <div>
             <h1 className="team-heading">The Team</h1>
-            <h2 className="position-heading">Goalkeepers</h2>
-            <div className="player-cards-row">
-                <PlayerCard number="1" name="Gianluigi Donnarumma" position="Goalkeeper" img={donnarummaImage} />
-                <PlayerCard number="39" name="Matvey Safonov" position="Goalkeeper" img={safonovImage} />
-                <PlayerCard number="80" name="Arnau Tenas" position="Goalkeeper" img={arnauImage} />
-            </div>
-            <h2 className="position-heading">Defenders</h2>
-            <div className="player-cards-row">
-                <PlayerCard number="2" name="Achraf Hakimi" position="Defender" img={hakimiImage} />
-                <PlayerCard number="3" name="Presnel Kimpembe" position="Defender" img={kimpembeImage} />
-                <PlayerCard number="5" name="Marquinhos" position="Defender" img={marquinhosImage} />
-                <PlayerCard number="21" name="Lucas Hernandez" position="Defender" img={hernandezImage} />
-                {/* Only 4 defenders in this row */}
-            </div>
-            <div className="player-cards-row">
-                <PlayerCard number="25" name="Nuno Mendes" position="Defender" img={mendesImage} />
-                <PlayerCard number="35" name="Lucas Beraldo" position="Defender" img={beraldoImage} />
-                <PlayerCard number="42" name="Yoram Zague" position="Defender" img={zagueImage} />
-                <PlayerCard number="45" name="Naoufel El Hannach" position="Defender" img={hannachImage} />
-                {/* Only 4 defenders in this row */}
-            </div>
-            <div className="player-cards-row">
-                <PlayerCard number="51" name="Willian Pacho" position="Defender" img={pachoImage} />
-                {/* If more defenders, add up to 4 per row */}
-            </div>
-            <h2 className="position-heading">Midfielders</h2>
-            <div className="player-cards-row">
-                <PlayerCard number="8" name="Fabian Ruiz" position="Midfielder" img={ruizImage} />
-                <PlayerCard number="17" name="Vitinha" position="Midfielder" img={vitinhaImage} />
-                <PlayerCard number="19" name="Lee Kang-in" position="Midfielder" img={leeImage} />
-                <PlayerCard number="24" name="Senny Mayulu" position="Midfielder" img={mayuluImage} />
-            </div>
-            <div className="player-cards-row">
-                <PlayerCard number="33" name="Warren Zaïre-Emery" position="Midfielder" img={zaireImage} />
-                <PlayerCard number="87" name="João Neves" position="Midfielder" img={nevesImage} />
-                {/* Only 2 midfielders in this row */}
-            </div>
-            <h2 className="position-heading">Foreward</h2>
-            <div className="player-cards-row">
-                <PlayerCard number="7" name="Khvicha Kvaratskhelia" position="Forward" img={khvichaImage} />
-                <PlayerCard number="9" name="Gonçalo Ramos" position="Forward" img={ramosImage} />
-                <PlayerCard number="10" name="Ousmane Dembélé" position="Forward" img={dembeleImage} />
-                <PlayerCard number="14" name="Désiré Doué" position="Forward" img={doueImage} />
-            </div>
-            <div className="player-cards-row">
-                <PlayerCard number="29" name="Bradley Barcola" position="Forward" img={barcolaImage} />
-                <PlayerCard number="49" name="Ibrahim Mbaye" position="Forward" img={mbayeImage} />
-                {/* Only 2 forwards in this row */}
-            </div>
+            {["Goalkeeper", "Defender", "Midfielder", "Forward"].map(position => (
+                <React.Fragment key={position}>
+                    <h2 className="position-heading">
+                        {position}{position === "Forward" ? "" : "s"}
+                    </h2>
+                    {chunkArray(grouped[position], 4).map((row, idx) => (
+                        <div className="player-cards-row" key={idx}>
+                            {row.map(player => (
+                                <PlayerCard
+                                    key={player._id}
+                                    number={player.number}
+                                    name={player.name}
+                                    position={player.position}
+                                    img={playerImages[player.number] || ""}
+                                />
+                            ))}
+                        </div>
+                    ))}
+                </React.Fragment>
+            ))}
         </div>
     );
 }

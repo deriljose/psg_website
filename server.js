@@ -77,5 +77,23 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
+const playerSchema = new mongoose.Schema({
+  number: Number,
+  name: String,
+  position: String,
+  image: String,
+});
+
+const Player = mongoose.model("Player", playerSchema);
+
+app.get("/api/players", async (req, res) => {
+  try {
+    const players = await Player.find({});
+    res.json(players);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch players" });
+  }
+});
+
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
