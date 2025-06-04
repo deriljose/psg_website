@@ -7,6 +7,7 @@ import Fixtures from "./Fixtures.jsx";
 import Players from "./Players.jsx";
 import Login from "./Login.jsx";
 import Admin from "./Admin.jsx"; // create this component for your admin UI
+import Signup from "./Signup";
 
 function MainContent() {
   return (
@@ -32,6 +33,7 @@ function App() {
       <Route path="/" element={<MainContent />} />
       <Route path="/login" element={<Login />} />
       <Route path="/admin" element={<Admin />} />
+      <Route path="/signup" element={<Signup />} />
     </Routes>
   );
 }

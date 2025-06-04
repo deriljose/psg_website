@@ -15,7 +15,7 @@ body.login-page {
   background: transparent;
   box-shadow: none;
   padding: 0;
-  width: 300px;
+  width: 500px;
   /* Remove height: 100vh to allow body flex centering */
   height: auto;
   margin: auto;
@@ -32,12 +32,12 @@ body.login-page {
 .password-heading {
   align-self: flex-start;
   margin: 0 0 0.2rem 0.5rem;
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: #fff;
 }
 
 .input-field {
-  width: 300px;
+  width: 100%;
   padding: 0.5rem 0;
   margin-bottom: 2rem;
   background: transparent;
@@ -53,13 +53,21 @@ body.login-page {
   border-bottom: 2.5px solid #fff;
 }
 
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width:500px;
+}
+
 button {
-  width: 260px;
+  width: 100%;
   padding: 0.7rem 0;
   background: #e20815;
   color: #fff;
   border: none;
-  border-radius: 25px;
+  border-radius: 5px;
   font-size: 1.1rem;
   font-weight: bold;
   cursor: pointer;

@@ -63,12 +63,12 @@ app.get("/api/fixtures", async (req, res) => {
 app.post("/api/login", async (req, res) => {
   const { username, password } = req.body;
   try {
-    // Use mongoose to access the users collection in the same database
     const db = mongoose.connection.db;
     const users = db.collection("users");
-    const user = await users.findOne({ username, password, role: "admin" });
+    // Find user with either role
+    const user = await users.findOne({ username, password });
     if (user) {
-      res.json({ success: true });
+      res.json({ success: true, role: user.role });
     } else {
       res.status(401).json({ success: false, message: "Invalid credentials" });
     }
@@ -93,6 +93,27 @@ app.get("/api/players", async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch players" });
   }
+});
+
+app.post("/api/signup", async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const db = mongoose.connection.db;
+    const users = db.collection("users");
+    const existing = await users.findOne({ username });
+    if (existing) {
+      return res.status(400).json({ message: "Username already exists" });
+    }
+    await users.insertOne({ username, password, role: "user" });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
 });
 
 const PORT = 5000;

@@ -19,3 +19,69 @@
     font-size: 1.2rem;
     text-align: center;
 }
+
+.admin-layout {
+    display: flex;
+    min-height: 100vh; /* Changed from 80vh to 100vh */
+    height: 100vh;     /* Ensure it fills the viewport */
+}
+
+.admin-sidebar {
+    width: 200px;
+    background: #19233a;
+    border-radius: 16px 0 0 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 32px 0 24px 0;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+    height: 100vh; /* Sidebar fills full height */
+}
+
+.sidebar-section {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.logout-section {
+    margin-top: auto;
+    padding-bottom: 12px;
+}
+
+.sidebar-link {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.15rem;
+    text-align: left;
+    padding: 12px 32px;
+    cursor: pointer;
+    border-radius: 0 20px 20px 0;
+    transition: background 0.18s, color 0.18s;
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+    background: #e20815;
+    color: #fff;
+}
+
+.logout-link {
+    color: #e20815;
+    font-weight: bold;
+}
+
+.admin-main {
+    flex: 1;
+    background: #151e2d;
+    border-radius: 0 16px 16px 0;
+    padding: 40px 32px;
+    color: #fff;
+    min-height: 100vh; /* Main area fills full height */
+    height: 100vh;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
