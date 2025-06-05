@@ -1,123 +1,125 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap");
 
 body {
-    margin: 0px;
-    margin-top: 200px;
-    color: white;
-    font-family: "IBM Plex Sans", sans-serif;
-    background-color: #0a0e14;
-    opacity: 1;
+  margin: 0px;
+  color: white;
+  font-family: "IBM Plex Sans", sans-serif;
+  background-color: #0a0e14;
+  opacity: 1;
+}
+.container {
+  margin-top: 200px;
 }
 
 .nav-bar {
-    background: #1a2434;
-    border-radius: 50px;
-    margin: 24px auto 0 auto;
-    width: 40%;
-    min-width: 320px;
-    max-width: 600px;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
-    padding: 0;
-    position: fixed;
-    top: 24px;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    border: 2px solid #e20815;
-    transition: top 0.3s, opacity 0.3s;
+  background: #1a2434;
+  border-radius: 50px;
+  margin: 24px auto 0 auto;
+  width: 40%;
+  min-width: 320px;
+  max-width: 600px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  padding: 0;
+  position: fixed;
+  top: 24px;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  border: 2px solid #e20815;
+  transition: top 0.3s, opacity 0.3s;
 }
 
 .nav-content {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    border-bottom: none;
-    padding: 0 24px;
-    min-height: 70px;
-    position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  border-bottom: none;
+  padding: 0 24px;
+  min-height: 70px;
+  position: relative;
 }
 
 .logo {
-    width: 50px;
-    position: static;
-    left: auto;
-    top: auto;
-    transform: none;
-    margin: 0 auto;
-    z-index: 1;
+  width: 50px;
+  position: static;
+  left: auto;
+  top: auto;
+  transform: none;
+  margin: 0 auto;
+  z-index: 1;
 }
 
 .nav-links-left {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 .nav-links-right {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .nav-links {
-    display: flex;
-    gap: 50px;
-    list-style: none;
-    padding: 0;
-    align-items: center;
-    justify-content: center;
-    flex: unset;
+  display: flex;
+  gap: 50px;
+  list-style: none;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  flex: unset;
 }
 
 .nav-links li {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .nav-links a {
-    color: white;
-    text-decoration: none;
-    outline: none;
-    font-family: "Open Sans", sans-serif;
+  color: white;
+  text-decoration: none;
+  outline: none;
+  font-family: "Open Sans", sans-serif;
 }
 
 .nav-links a:hover {
-    color: #f0f0f0;
+  color: #f0f0f0;
 }
 
 .news-card {
-    background: #004170;
-    width: 300px;
-    border: 2px solid red;
-    border-radius: 20px;
-    overflow: hidden;
+  background: #004170;
+  width: 300px;
+  border: 2px solid red;
+  border-radius: 20px;
+  overflow: hidden;
 }
 
 .news-card-image {
-    width: 300px;
-    display: block;
-    border-radius: 0;
+  width: 300px;
+  display: block;
+  border-radius: 0;
 }
 
 .login-link {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .nav-bar-visible {
-    opacity: 1;
-    pointer-events: auto;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .nav-bar-hidden {
-    opacity: 0;
-    pointer-events: none;
-    top: -100px;
+  opacity: 0;
+  pointer-events: none;
+  top: -100px;
 }
 
 .nav-btn-link {
-    background: none;
-    border: none;
-    color: inherit;
-    font: inherit;
-    cursor: pointer;
-    padding: 0;
-    margin: 0;
-    text-decoration: none;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
 }

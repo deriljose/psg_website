@@ -1,77 +1,75 @@
 /* Players.css */
-.team-heading{
-    text-align:center;
+.team-heading {
+  text-align: center;
 }
 
-
-
 .player-cards-row {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 50px;
-    justify-content: center;
-    margin-top: 50px;
-    margin-bottom: 50px;
-    overflow-x: auto;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 50px;
+  justify-content: center;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  overflow-x: auto;
 }
 
 .player-card {
-    background: #151e2d;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    padding: 0;
-    width: 250px;
-    height: 400px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-    transition: box-shadow 0.2s;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
+  background: #151e2d;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  width: 200px;
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .player-card img {
-    display: none;
+  display: none;
 }
 
 .player-card-content {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height:25%;
-    background: rgba(21, 30, 45, 0.85);
-    color: #fff;
-    padding: 20px 0 12px 0;
-    text-align: center;
-    z-index: 20;
-    pointer-events: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 25%;
+  background: rgba(21, 30, 45, 0.85);
+  color: #fff;
+  padding: 20px 0 12px 0;
+  text-align: center;
+  z-index: 20;
+  pointer-events: none;
 }
 
 .player-card h3 {
-    margin: 8px 0 4px 0;
+  margin: 8px 0 4px 0;
 }
 
 .player-card p {
-    margin: 0;
-    color: #bbb;
-    font-size: 1em;
+  margin: 0;
+  color: #bbb;
+  font-size: 1em;
 }
 
 .player-card:hover {
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 .player-jersey-number {
-    position: absolute;
-    top: 12px;
-    left: 16px;
-    font-size: 2.2em;
-    font-weight: bold;
-    color: #fff;
-    opacity: 0.2;
-    z-index: 2;
-    pointer-events: none;
+  position: absolute;
+  top: 12px;
+  left: 16px;
+  font-size: 2.2em;
+  font-weight: bold;
+  color: #fff;
+  opacity: 0.2;
+  z-index: 2;
+  pointer-events: none;
 }
