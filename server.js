@@ -8,8 +8,10 @@ dotenv.config();
 
 const app = express();
 app.use(cors());
-app.use(express.json());
-app.use(bodyParser.json());
+// Increase payload limit for JSON and urlencoded bodies to handle large base64 images
+app.use(express.json({ limit: "10mb" }));
+app.use(bodyParser.json({ limit: "10mb" }));
+app.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
 
 // Connect to MongoDB Atlas, specifying the database name in the URI
 mongoose.connect(
@@ -114,6 +116,127 @@ app.post("/api/signup", async (req, res) => {
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();
+});
+
+// Add/Update News endpoints
+app.post("/api/news", async (req, res) => {
+  try {
+    const { title, content, imageData, publishedAt } = req.body;
+    if (!title || !content) {
+      return res
+        .status(400)
+        .json({ message: "Title and content are required" });
+    }
+    const news = new News({
+      title,
+      content,
+      imageData: imageData || "",
+      publishedAt: publishedAt ? new Date(publishedAt) : new Date(),
+    });
+    await news.save();
+    res.json({ success: true, news });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to add news" });
+  }
+});
+
+app.put("/api/news/:id", async (req, res) => {
+  try {
+    const { title, content, imageData, publishedAt } = req.body;
+    const update = {
+      title,
+      content,
+      publishedAt: publishedAt ? new Date(publishedAt) : new Date(),
+    };
+    // Only update imageData if provided (including empty string to remove image)
+    if (imageData !== undefined) update.imageData = imageData;
+    const news = await News.findByIdAndUpdate(req.params.id, update, {
+      new: true,
+    });
+    if (!news) return res.status(404).json({ message: "News not found" });
+    res.json({ success: true, news });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to update news" });
+  }
+});
+
+// Delete News endpoint
+app.delete("/api/news/:id", async (req, res) => {
+  try {
+    const news = await News.findByIdAndDelete(req.params.id);
+    if (!news) return res.status(404).json({ message: "News not found" });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to delete news" });
+  }
+});
+
+// Add Fixture endpoint
+app.post("/api/fixtures", async (req, res) => {
+  try {
+    const { competition, stage, homeTeam, awayTeam, date, venue, status } =
+      req.body;
+    if (!competition || !homeTeam || !awayTeam || !date) {
+      return res.status(400).json({
+        message: "Competition, Home Team, Away Team, and Date are required",
+      });
+    }
+    const fixture = new Fixture({
+      competition,
+      stage,
+      homeTeam,
+      awayTeam,
+      date: new Date(date),
+      venue,
+      status,
+    });
+    await fixture.save();
+    res.json({ success: true, fixture });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to add fixture" });
+  }
+});
+
+// Delete Fixture endpoint
+app.delete("/api/fixtures/:id", async (req, res) => {
+  try {
+    const fixture = await Fixture.findByIdAndDelete(req.params.id);
+    if (!fixture) return res.status(404).json({ message: "Fixture not found" });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to delete fixture" });
+  }
+});
+
+// Add Player endpoint
+app.post("/api/players", async (req, res) => {
+  try {
+    const { number, name, position, image } = req.body;
+    if (!number || !name || !position || !image) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+    const player = new Player({
+      number,
+      name,
+      position,
+      image,
+    });
+    await player.save();
+    res.json({ success: true, player });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to add player" });
+  }
+});
+
+// Delete Player endpoint
+app.delete("/api/players/:id", async (req, res) => {
+  try {
+    const player = await Player.findByIdAndDelete(req.params.id);
+    if (!player) return res.status(404).json({ message: "Player not found" });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to delete player" });
+  }
 });
 
 const PORT = 5000;

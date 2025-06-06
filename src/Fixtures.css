@@ -1,41 +1,41 @@
 .fixture-heading {
-    text-align: center;
-    font-size: 2.5rem;
-    margin-top: 100px;
-    margin-bottom: 100px;
+  text-align: center;
+  font-size: 2.5rem;
+  margin-top: 100px;
+  margin-bottom: 100px;
 }
 
 .fixtures-cards-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
-    justify-content: center;
-    margin-top: 32px;
-    margin-bottom: 100px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+  margin-top: 32px;
+  margin-bottom: 100px;
 }
 
 .fixture-card {
-    background: #1a2434;
-    border-radius: 16px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-    padding: 24px 32px;
-    min-width: 250px;
-    max-width: 320px;
-    width: 300px;
-    color: white;
+  background: #1a2434;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  padding: 24px 32px;
+  min-width: 250px;
+  max-width: 320px;
+  width: 300px;
+  color: white;
 }
 
 .fixture-card ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .fixture-card li {
-    margin-bottom: 8px;
-    font-size: 1.1em;
+  margin-bottom: 8px;
+  font-size: 1.1em;
 }
 
 .fixture-card li:last-child {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }

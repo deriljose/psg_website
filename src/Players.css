@@ -3,6 +3,10 @@
   text-align: center;
 }
 
+.position-heading {
+  margin-left: 100px;
+}
+
 .player-cards-row {
   display: flex;
   flex-wrap: nowrap;

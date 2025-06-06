@@ -24,7 +24,7 @@ function News() {
             />
           </div>
           <div className="news-content">
-            <h2>{news.title}</h2>
+            <h2 className="news-content-heading">{news.title}</h2>
             <p>{news.content}</p>
             <p style={{ fontSize: "0.9em", color: "#888" }}>
               {news.publishedAt

@@ -14,10 +14,51 @@ function Admin() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  // Fixtures management state
+  const [fixtures, setFixtures] = useState([]);
+  const [fixtureLoading, setFixtureLoading] = useState(false);
+  const [fixtureForm, setFixtureForm] = useState({
+    competition: "",
+    stage: "",
+    homeTeam: "",
+    awayTeam: "",
+    date: "",
+    venue: "",
+    status: "",
+  });
+  const [fixtureError, setFixtureError] = useState("");
+  const [fixtureSuccess, setFixtureSuccess] = useState("");
+
+  // Players management state
+  const [players, setPlayers] = useState([]);
+  const [playerLoading, setPlayerLoading] = useState(false);
+  const [playerForm, setPlayerForm] = useState({
+    number: "",
+    name: "",
+    position: "",
+    image: null,
+  });
+  const [playerError, setPlayerError] = useState("");
+  const [playerSuccess, setPlayerSuccess] = useState("");
+
   // Fetch news when News tab is active
   useEffect(() => {
     if (active === "News") {
       fetchNews();
+    }
+  }, [active]);
+
+  // Fetch fixtures when Fixtures tab is active
+  useEffect(() => {
+    if (active === "Fixtures") {
+      fetchFixtures();
+    }
+  }, [active]);
+
+  // Fetch players when Players tab is active
+  useEffect(() => {
+    if (active === "Players") {
+      fetchPlayers();
     }
   }, [active]);
 
@@ -34,34 +75,79 @@ function Admin() {
     setLoading(false);
   };
 
-  const handleInputChange = (e) => {
+  const fetchFixtures = async () => {
+    setFixtureLoading(true);
+    setFixtureError("");
+    try {
+      const res = await fetch("http://localhost:5000/api/fixtures");
+      const data = await res.json();
+      setFixtures(Array.isArray(data) ? data : []);
+    } catch {
+      setFixtureError("Failed to fetch fixtures.");
+    }
+    setFixtureLoading(false);
+  };
+
+  const fetchPlayers = async () => {
+    setPlayerLoading(true);
+    setPlayerError("");
+    try {
+      const res = await fetch("http://localhost:5000/api/players");
+      const data = await res.json();
+      setPlayers(Array.isArray(data) ? data : []);
+    } catch {
+      setPlayerError("Failed to fetch players.");
+    }
+    setPlayerLoading(false);
+  };
+
+  const handleInputChange = async (e) => {
     const { name, value, files } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: files ? files[0] : value,
-    }));
+    if (name === "image" && files && files[0]) {
+      // Convert image to base64 string
+      const file = files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setForm((prev) => ({
+          ...prev,
+          image: reader.result.split(",")[1], // Remove data:image/...;base64, prefix
+        }));
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setForm((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    const formData = new FormData();
-    formData.append("title", form.title);
-    formData.append("content", form.content);
-    if (form.image) formData.append("image", form.image);
+    // Prepare JSON body with base64 image string
+    const payload = {
+      title: form.title,
+      content: form.content,
+      // Only send imageData if a new image is uploaded or if editing (to allow clearing image)
+      imageData: form.image !== null ? form.image : undefined,
+      publishedAt: new Date(),
+    };
 
     try {
       let res;
       if (editId) {
         res = await fetch(`http://localhost:5000/api/news/${editId}`, {
           method: "PUT",
-          body: formData,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
         });
       } else {
         res = await fetch("http://localhost:5000/api/news", {
           method: "POST",
-          body: formData,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
         });
       }
       if (res.ok) {
@@ -79,7 +165,11 @@ function Admin() {
   };
 
   const handleEdit = (news) => {
-    setForm({ title: news.title, content: news.content, image: null });
+    setForm({
+      title: news.title,
+      content: news.content,
+      image: "", // Don't prefill image, user can upload new one if desired
+    });
     setEditId(news._id);
     setSuccess("");
     setError("");
@@ -102,6 +192,139 @@ function Admin() {
       }
     } catch {
       setError("Server error.");
+    }
+  };
+
+  const handleFixtureInputChange = (e) => {
+    const { name, value } = e.target;
+    setFixtureForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleFixtureFormSubmit = async (e) => {
+    e.preventDefault();
+    setFixtureError("");
+    setFixtureSuccess("");
+    try {
+      const res = await fetch("http://localhost:5000/api/fixtures", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...fixtureForm,
+          date: fixtureForm.date ? new Date(fixtureForm.date) : undefined,
+        }),
+      });
+      if (res.ok) {
+        setFixtureSuccess("Fixture added.");
+        setFixtureForm({
+          competition: "",
+          stage: "",
+          homeTeam: "",
+          awayTeam: "",
+          date: "",
+          venue: "",
+          status: "",
+        });
+        fetchFixtures();
+      } else {
+        const data = await res.json();
+        setFixtureError(data.message || "Failed to add fixture.");
+      }
+    } catch {
+      setFixtureError("Server error.");
+    }
+  };
+
+  const handleDeleteFixture = async (id) => {
+    if (!window.confirm("Delete this fixture?")) return;
+    setFixtureError("");
+    setFixtureSuccess("");
+    try {
+      const res = await fetch(`http://localhost:5000/api/fixtures/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setFixtureSuccess("Fixture deleted.");
+        fetchFixtures();
+      } else {
+        const data = await res.json();
+        setFixtureError(data.message || "Delete failed.");
+      }
+    } catch {
+      setFixtureError("Server error.");
+    }
+  };
+
+  const handlePlayerInputChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === "image" && files && files[0]) {
+      const file = files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPlayerForm((prev) => ({
+          ...prev,
+          image: reader.result.split(",")[1], // base64 string
+        }));
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPlayerForm((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
+
+  const handlePlayerFormSubmit = async (e) => {
+    e.preventDefault();
+    setPlayerError("");
+    setPlayerSuccess("");
+    try {
+      const res = await fetch("http://localhost:5000/api/players", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...playerForm,
+          number: playerForm.number ? Number(playerForm.number) : undefined,
+        }),
+      });
+      if (res.ok) {
+        setPlayerSuccess("Player added.");
+        setPlayerForm({
+          number: "",
+          name: "",
+          position: "",
+          image: null,
+        });
+        fetchPlayers();
+      } else {
+        const data = await res.json();
+        setPlayerError(data.message || "Failed to add player.");
+      }
+    } catch {
+      setPlayerError("Server error.");
+    }
+  };
+
+  const handleDeletePlayer = async (id) => {
+    if (!window.confirm("Delete this player?")) return;
+    setPlayerError("");
+    setPlayerSuccess("");
+    try {
+      const res = await fetch(`http://localhost:5000/api/players/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setPlayerSuccess("Player deleted.");
+        fetchPlayers();
+      } else {
+        const data = await res.json();
+        setPlayerError(data.message || "Delete failed.");
+      }
+    } catch {
+      setPlayerError("Server error.");
     }
   };
 
@@ -153,23 +376,13 @@ function Admin() {
         </div>
       </aside>
       <main className="admin-main">
-        <h1 className="admin-title">Admin Dashboard</h1>
         <div className="admin-content">
           {active === "News" && (
             <div>
               <h2>Manage News</h2>
               <form
                 onSubmit={handleFormSubmit}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1rem",
-                  marginBottom: "2rem",
-                  background: "#222b3a",
-                  padding: "1.5rem",
-                  borderRadius: "12px",
-                  maxWidth: 400,
-                }}
+                className="admin-news-form"
                 encType="multipart/form-data"
               >
                 <input
@@ -179,7 +392,6 @@ function Admin() {
                   value={form.title}
                   onChange={handleInputChange}
                   required
-                  style={{ padding: "0.5rem" }}
                 />
                 <textarea
                   name="content"
@@ -188,7 +400,6 @@ function Admin() {
                   onChange={handleInputChange}
                   required
                   rows={4}
-                  style={{ padding: "0.5rem" }}
                 />
                 <input
                   type="file"
@@ -196,16 +407,12 @@ function Admin() {
                   accept="image/*"
                   onChange={handleInputChange}
                 />
-                <button
-                  type="submit"
-                  style={{ background: "#e20815", color: "#fff" }}
-                >
+                <button type="submit">
                   {editId ? "Update News" : "Add News"}
                 </button>
                 {editId && (
                   <button
                     type="button"
-                    style={{ background: "#888", color: "#fff" }}
                     onClick={() => {
                       setEditId(null);
                       setForm({ title: "", content: "", image: null });
@@ -220,88 +427,135 @@ function Admin() {
               {loading ? (
                 <div>Loading...</div>
               ) : (
-                <div
-                  style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: "1.5rem",
-                    justifyContent: "center",
-                  }}
-                >
+                <div className="admin-news-card-list">
                   {newsList.map((news) => (
                     <div
                       key={news._id}
-                      style={{
-                        background: "#222b3a",
-                        borderRadius: "12px",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
-                        width: 320,
-                        padding: 16,
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        position: "relative",
-                      }}
+                      className="admin-news-card news-card-type"
                     >
                       {news.imageData && (
                         <img
                           src={`data:image/jpeg;base64,${news.imageData}`}
                           alt={news.title}
-                          style={{
-                            width: "100%",
-                            height: 140,
-                            objectFit: "cover",
-                            borderRadius: "8px",
-                            marginBottom: 12,
-                          }}
                         />
                       )}
-                      <h3 style={{ margin: "0 0 8px 0" }}>{news.title}</h3>
-                      <p
-                        style={{
-                          fontSize: "1em",
-                          color: "#ccc",
-                          margin: "0 0 8px 0",
-                          textAlign: "center",
-                        }}
-                      >
-                        {news.content}
-                      </p>
-                      <div
-                        style={{
-                          fontSize: "0.9em",
-                          color: "#888",
-                          marginBottom: 12,
-                        }}
-                      >
+                      <h3>{news.title}</h3>
+                      <p>{news.content}</p>
+                      <div className="admin-news-date">
                         {news.publishedAt
                           ? new Date(news.publishedAt).toLocaleDateString()
                           : ""}
                       </div>
-                      <div style={{ display: "flex", gap: "0.5rem" }}>
-                        <button
-                          style={{
-                            background: "#e20815",
-                            color: "#fff",
-                            border: "none",
-                            borderRadius: "5px",
-                            padding: "0.4rem 1rem",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleEdit(news)}
-                        >
-                          Edit
+                      <div className="admin-news-actions">
+                        <button onClick={() => handleEdit(news)}>Edit</button>
+                        <button onClick={() => handleDelete(news._id)}>
+                          Delete
                         </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+          {active === "Fixtures" && (
+            <div>
+              <h2>Manage Fixtures</h2>
+              <form
+                onSubmit={handleFixtureFormSubmit}
+                className="admin-news-form"
+                style={{ maxWidth: 500 }}
+              >
+                <input
+                  type="text"
+                  name="competition"
+                  placeholder="Competition"
+                  value={fixtureForm.competition}
+                  onChange={handleFixtureInputChange}
+                  required
+                />
+                <input
+                  type="text"
+                  name="stage"
+                  placeholder="Stage"
+                  value={fixtureForm.stage}
+                  onChange={handleFixtureInputChange}
+                />
+                <input
+                  type="text"
+                  name="homeTeam"
+                  placeholder="Home Team"
+                  value={fixtureForm.homeTeam}
+                  onChange={handleFixtureInputChange}
+                  required
+                />
+                <input
+                  type="text"
+                  name="awayTeam"
+                  placeholder="Away Team"
+                  value={fixtureForm.awayTeam}
+                  onChange={handleFixtureInputChange}
+                  required
+                />
+                <input
+                  type="datetime-local"
+                  name="date"
+                  placeholder="Date"
+                  value={fixtureForm.date}
+                  onChange={handleFixtureInputChange}
+                  required
+                />
+                <input
+                  type="text"
+                  name="venue"
+                  placeholder="Venue"
+                  value={fixtureForm.venue}
+                  onChange={handleFixtureInputChange}
+                />
+                <input
+                  type="text"
+                  name="status"
+                  placeholder="Status"
+                  value={fixtureForm.status}
+                  onChange={handleFixtureInputChange}
+                />
+                <button type="submit">Add Fixture</button>
+                {fixtureError && (
+                  <div style={{ color: "red" }}>{fixtureError}</div>
+                )}
+                {fixtureSuccess && (
+                  <div style={{ color: "green" }}>{fixtureSuccess}</div>
+                )}
+              </form>
+              {fixtureLoading ? (
+                <div>Loading...</div>
+              ) : (
+                <div className="admin-news-card-list">
+                  {fixtures.map((fixture) => (
+                    <div
+                      key={fixture._id}
+                      className="admin-news-card fixture-card-type"
+                    >
+                      <h3>
+                        {fixture.homeTeam} vs {fixture.awayTeam}
+                      </h3>
+                      <p>
+                        <strong>Competition:</strong> {fixture.competition}
+                        <br />
+                        <strong>Stage:</strong> {fixture.stage}
+                        <br />
+                        <strong>Date:</strong>{" "}
+                        {fixture.date
+                          ? new Date(fixture.date).toLocaleString()
+                          : ""}
+                        <br />
+                        <strong>Venue:</strong> {fixture.venue}
+                        <br />
+                        <strong>Status:</strong> {fixture.status}
+                      </p>
+                      <div className="admin-news-actions">
                         <button
-                          style={{
-                            background: "#444",
-                            color: "#fff",
-                            border: "none",
-                            borderRadius: "5px",
-                            padding: "0.4rem 1rem",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleDelete(news._id)}
+                          onClick={() => handleDeleteFixture(fixture._id)}
                         >
                           Delete
                         </button>
@@ -312,8 +566,114 @@ function Admin() {
               )}
             </div>
           )}
-          {active === "Fixtures" && <p>Manage Fixtures here.</p>}
-          {active === "Players" && <p>Manage Players here.</p>}
+          {active === "Players" && (
+            <div>
+              <h2>Manage Players</h2>
+              <form
+                onSubmit={handlePlayerFormSubmit}
+                className="admin-news-form"
+                style={{ maxWidth: 400 }}
+                encType="multipart/form-data"
+              >
+                <input
+                  type="number"
+                  name="number"
+                  placeholder="Jersey Number"
+                  value={playerForm.number}
+                  onChange={handlePlayerInputChange}
+                  required
+                />
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Player Name"
+                  value={playerForm.name}
+                  onChange={handlePlayerInputChange}
+                  required
+                />
+                <select
+                  name="position"
+                  value={playerForm.position}
+                  onChange={handlePlayerInputChange}
+                  required
+                  style={{ padding: "0.5rem" }}
+                >
+                  <option value="">Select Position</option>
+                  <option value="Goalkeeper">Goalkeeper</option>
+                  <option value="Defender">Defender</option>
+                  <option value="Midfielder">Midfielder</option>
+                  <option value="Forward">Forward</option>
+                </select>
+                <input
+                  type="file"
+                  name="image"
+                  accept="image/*"
+                  onChange={handlePlayerInputChange}
+                  required
+                />
+                <button type="submit">Add Player</button>
+                {playerError && (
+                  <div style={{ color: "red" }}>{playerError}</div>
+                )}
+                {playerSuccess && (
+                  <div style={{ color: "green" }}>{playerSuccess}</div>
+                )}
+              </form>
+              {playerLoading ? (
+                <div>Loading...</div>
+              ) : (
+                <div>
+                  {["Goalkeeper", "Defender", "Midfielder", "Forward"].map(
+                    (pos) => (
+                      <div key={pos} className="admin-player-section">
+                        <h3 className="admin-player-section-title">
+                          {pos}s
+                        </h3>
+                        <div className="admin-news-card-list">
+                          {players.filter((p) => p.position === pos).length === 0 ? (
+                            <div className="admin-no-players">
+                              No {pos.toLowerCase()}s
+                            </div>
+                          ) : (
+                            players
+                              .filter((player) => player.position === pos)
+                              .map((player) => (
+                                <div
+                                  key={player._id}
+                                  className="admin-news-card player-card-type"
+                                >
+                                  {player.image && (
+                                    <img
+                                      src={`data:image/jpeg;base64,${player.image}`}
+                                      alt={player.name}
+                                    />
+                                  )}
+                                  <h3>
+                                    #{player.number} {player.name}
+                                  </h3>
+                                  <p>
+                                    <strong>Position:</strong> {player.position}
+                                  </p>
+                                  <div className="admin-news-actions">
+                                    <button
+                                      onClick={() =>
+                                        handleDeletePlayer(player._id)
+                                      }
+                                    >
+                                      Delete
+                                    </button>
+                                  </div>
+                                </div>
+                              ))
+                          )}
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </main>
     </div>
