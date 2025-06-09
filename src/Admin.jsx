@@ -24,7 +24,7 @@ function Admin() {
     awayTeam: "",
     date: "",
     venue: "",
-    status: "",
+    // status: "", // Remove status
   });
   const [fixtureError, setFixtureError] = useState("");
   const [fixtureSuccess, setFixtureSuccess] = useState("");
@@ -130,8 +130,13 @@ function Admin() {
     const payload = {
       title: form.title,
       content: form.content,
-      // Only send imageData if a new image is uploaded or if editing (to allow clearing image)
-      imageData: form.image !== null ? form.image : undefined,
+      // Only send imageData if a new image is uploaded, or if editing and image is present
+      imageData:
+        form.image !== null && form.image !== ""
+          ? form.image
+          : editId
+          ? undefined
+          : "",
       publishedAt: new Date(),
     };
 
@@ -168,7 +173,7 @@ function Admin() {
     setForm({
       title: news.title,
       content: news.content,
-      image: "", // Don't prefill image, user can upload new one if desired
+      image: news.imageData || null, // Prefill with existing imageData
     });
     setEditId(news._id);
     setSuccess("");
@@ -214,6 +219,7 @@ function Admin() {
         body: JSON.stringify({
           ...fixtureForm,
           date: fixtureForm.date ? new Date(fixtureForm.date) : undefined,
+          // status: fixtureForm.status, // Remove status from payload
         }),
       });
       if (res.ok) {
@@ -225,7 +231,7 @@ function Admin() {
           awayTeam: "",
           date: "",
           venue: "",
-          status: "",
+          // status: "",
         });
         fetchFixtures();
       } else {
@@ -512,13 +518,7 @@ function Admin() {
                   value={fixtureForm.venue}
                   onChange={handleFixtureInputChange}
                 />
-                <input
-                  type="text"
-                  name="status"
-                  placeholder="Status"
-                  value={fixtureForm.status}
-                  onChange={handleFixtureInputChange}
-                />
+                {/* Removed status input */}
                 <button type="submit">Add Fixture</button>
                 {fixtureError && (
                   <div style={{ color: "red" }}>{fixtureError}</div>
@@ -550,8 +550,7 @@ function Admin() {
                           : ""}
                         <br />
                         <strong>Venue:</strong> {fixture.venue}
-                        <br />
-                        <strong>Status:</strong> {fixture.status}
+                        {/* Removed status display */}
                       </p>
                       <div className="admin-news-actions">
                         <button
@@ -626,11 +625,10 @@ function Admin() {
                   {["Goalkeeper", "Defender", "Midfielder", "Forward"].map(
                     (pos) => (
                       <div key={pos} className="admin-player-section">
-                        <h3 className="admin-player-section-title">
-                          {pos}s
-                        </h3>
+                        <h3 className="admin-player-section-title">{pos}s</h3>
                         <div className="admin-news-card-list">
-                          {players.filter((p) => p.position === pos).length === 0 ? (
+                          {players.filter((p) => p.position === pos).length ===
+                          0 ? (
                             <div className="admin-no-players">
                               No {pos.toLowerCase()}s
                             </div>

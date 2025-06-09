@@ -39,3 +39,7 @@
 .fixture-card li:last-child {
   margin-bottom: 0;
 }
+
+.fixture-competiton {
+  color: #e30613;
+}

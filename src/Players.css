@@ -22,7 +22,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 0;
   width: 200px;
-  height: 350px;
+  height: 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -54,6 +54,7 @@
 
 .player-card h3 {
   margin: 8px 0 4px 0;
+  transition: color 0.3s;
 }
 
 .player-card p {
@@ -66,6 +67,10 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
+.player-card:hover h3 {
+  color: #e30613;
+}
+
 .player-jersey-number {
   position: absolute;
   top: 12px;
@@ -76,4 +81,8 @@
   opacity: 0.2;
   z-index: 2;
   pointer-events: none;
+}
+
+.position-heading {
+  color: #e30613;
 }
