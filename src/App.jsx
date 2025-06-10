@@ -8,6 +8,7 @@ import Players from "./Players.jsx";
 import Login from "./Login.jsx";
 import Admin from "./Admin.jsx"; // create this component for your admin UI
 import Signup from "./Signup";
+import Footer from "./Footer.jsx";
 
 function MainContent() {
   return (
@@ -22,6 +23,7 @@ function MainContent() {
       <div id="players-section">
         <Players />
       </div>
+      <Footer />
     </div>
   );
 }
