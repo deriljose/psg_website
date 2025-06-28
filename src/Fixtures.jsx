@@ -5,7 +5,7 @@ function Fixtures() {
   const [fixtures, setFixtures] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/fixtures")
+    fetch("/api/fixtures")
       .then((res) => res.json())
       .then((data) => setFixtures(Array.isArray(data) ? data : []))
       .catch(() => setFixtures([]));

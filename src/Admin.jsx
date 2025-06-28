@@ -66,7 +66,7 @@ function Admin() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("http://localhost:5000/api/news");
+      const res = await fetch("/api/news");
       const data = await res.json();
       setNewsList(Array.isArray(data) ? data : []);
     } catch {
@@ -79,7 +79,7 @@ function Admin() {
     setFixtureLoading(true);
     setFixtureError("");
     try {
-      const res = await fetch("http://localhost:5000/api/fixtures");
+      const res = await fetch("/api/fixtures");
       const data = await res.json();
       setFixtures(Array.isArray(data) ? data : []);
     } catch {
@@ -92,7 +92,7 @@ function Admin() {
     setPlayerLoading(true);
     setPlayerError("");
     try {
-      const res = await fetch("http://localhost:5000/api/players");
+      const res = await fetch("/api/players");
       const data = await res.json();
       setPlayers(Array.isArray(data) ? data : []);
     } catch {
@@ -143,13 +143,13 @@ function Admin() {
     try {
       let res;
       if (editId) {
-        res = await fetch(`http://localhost:5000/api/news/${editId}`, {
+        res = await fetch(`/api/news/${editId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
       } else {
-        res = await fetch("http://localhost:5000/api/news", {
+        res = await fetch("/api/news", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
@@ -185,7 +185,7 @@ function Admin() {
     setError("");
     setSuccess("");
     try {
-      const res = await fetch(`http://localhost:5000/api/news/${id}`, {
+      const res = await fetch(`/api/news/${id}`, {
         method: "DELETE",
       });
       if (res.ok) {
@@ -213,7 +213,7 @@ function Admin() {
     setFixtureError("");
     setFixtureSuccess("");
     try {
-      const res = await fetch("http://localhost:5000/api/fixtures", {
+      const res = await fetch("/api/fixtures", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -248,7 +248,7 @@ function Admin() {
     setFixtureError("");
     setFixtureSuccess("");
     try {
-      const res = await fetch(`http://localhost:5000/api/fixtures/${id}`, {
+      const res = await fetch(`/api/fixtures/${id}`, {
         method: "DELETE",
       });
       if (res.ok) {
@@ -288,7 +288,7 @@ function Admin() {
     setPlayerError("");
     setPlayerSuccess("");
     try {
-      const res = await fetch("http://localhost:5000/api/players", {
+      const res = await fetch("/api/players", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -319,7 +319,7 @@ function Admin() {
     setPlayerError("");
     setPlayerSuccess("");
     try {
-      const res = await fetch(`http://localhost:5000/api/players/${id}`, {
+      const res = await fetch(`/api/players/${id}`, {
         method: "DELETE",
       });
       if (res.ok) {

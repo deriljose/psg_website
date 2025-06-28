@@ -5,7 +5,7 @@ function News() {
   const [newsList, setNewsList] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/news")
+    fetch("/api/news")
       .then((res) => res.json())
       .then((data) => setNewsList(Array.isArray(data) ? data : []))
       .catch(() => setNewsList([]));

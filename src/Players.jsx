@@ -41,7 +41,7 @@ function Players() {
   const [players, setPlayers] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/players")
+    fetch("/api/players")
       .then((res) => res.json())
       .then((data) => setPlayers(data))
       .catch(() => setPlayers([]));

@@ -3,8 +3,15 @@ import mongoose from "mongoose";
 import cors from "cors";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+import fs from "fs";
 
 dotenv.config();
+
+if (!process.env.DB_PASSWORD) {
+  console.warn("Warning: DB_PASSWORD environment variable is not set.");
+}
 
 const app = express();
 app.use(cors());
@@ -14,11 +21,19 @@ app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
 
 // Connect to MongoDB Atlas, specifying the database name in the URI
-mongoose.connect(
-  `mongodb+srv://deril:${process.env.DB_PASSWORD}@pcbuilder.7lis3so.mongodb.net/psg_website?retryWrites=true&w=majority&appName=pcbuilder`
-);
+const mongoUri = `mongodb+srv://deril:${process.env.DB_PASSWORD}@pcbuilder.7lis3so.mongodb.net/psg_website?retryWrites=true&w=majority&appName=pcbuilder`;
+
+mongoose
+  .connect(mongoUri)
+  .then(() => {
+    console.log("MongoDB connected successfully.");
+  })
+  .catch((err) => {
+    console.error("MongoDB initial connection error:", err);
+  });
+
 mongoose.connection.on("error", (err) => {
-  console.error("MongoDB connection error:", err);
+  console.error("MongoDB runtime connection error:", err);
 });
 
 const newsSchema = new mongoose.Schema({
@@ -239,5 +254,32 @@ app.delete("/api/players/:id", async (req, res) => {
   }
 });
 
-const PORT = 5000;
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Serve static files from 'public' (for favicon, etc.)
+app.use(express.static(path.join(__dirname, "public")));
+
+// Serve static files from 'dist' (React build output)
+app.use(express.static(path.join(__dirname, "dist")));
+
+// Set Content-Security-Policy header
+app.use((req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' https:; connect-src 'self';"
+  );
+  next();
+});
+
+// Serve index.html for all non-API routes (for React Router)
+app.get(/^\/(?!api).*/, (req, res) => {
+  const indexPath = path.join(__dirname, "dist", "index.html");
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(404).send("index.html not found");
+  }
+});
+
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
