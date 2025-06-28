@@ -34,6 +34,17 @@ function Footer() {
           </a>
         ))}
       </div>
+      <div
+        className="psg-footer-disclaimer"
+        style={{
+          fontSize: "0.85em",
+          color: "#888",
+          marginTop: "1em",
+          textAlign: "center",
+        }}
+      >
+        This is a fan website and has no relation with the actual PSG club.
+      </div>
     </footer>
   );
 }
